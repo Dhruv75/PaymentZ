@@ -21,6 +21,7 @@ router.post("/signup", (req, res) => {
 
   res.send(data);
 });
+
 router.get("/login", (req, res) => {
   res.send("Hello form user login ");
 });
