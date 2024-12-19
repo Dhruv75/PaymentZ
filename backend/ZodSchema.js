@@ -8,7 +8,7 @@ const zodSchemaSignUp = z.object({
     .max(100, { message: "Name cannot be longer than 100 words" }),
   password: z
     .string()
-    .min(8)
+    .min(8, { message: "Must be 8 or more characters long" })
     .regex(
       /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
       "Password must contain at least one digit, one lowercase letter, one uppercase letter, and one special character"
