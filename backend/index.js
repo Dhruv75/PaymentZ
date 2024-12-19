@@ -2,19 +2,23 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 require("dotenv").config();
+const jwt = require("jsonwebtoken");
+const userRouter = require("./routes/user");
 
+//configuration
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-const userRouter = require("./routes/user");
-
+//user route
 app.use("/user", userRouter);
 
 app.get("/", function (req, res) {
   res.send("hello form home page");
 });
 
+
+//DB Connection
 async function ConnectDB() {
   try {
     await mongoose.connect(process.env.DATABASE_URL);
@@ -25,6 +29,9 @@ async function ConnectDB() {
 }
 
 ConnectDB();
+
+
+
 
 app.listen(3000, function () {
   console.log("server started on port 3000");
