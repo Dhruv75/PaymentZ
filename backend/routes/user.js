@@ -3,13 +3,14 @@ const { zodSchemaSignUp, zodSchemaForLogin } = require("../ZodSchema");
 const { User } = require("../db");
 const jwt = require("jsonwebtoken");
 require("dotenv").config(); // For reading environment variables
+const {Account} = require("../db");
 
 const router = express.Router();
 
 // Helper function to check if the user exists
-const checkIfUserExists = async (userName) => {
+const checkIfUserExists = async (username) => {
   try {
-    const existingUser = await User.findOne({ userName });
+    const existingUser = await User.findOne({ username });
     return existingUser;
   } catch (error) {
     throw new Error("Error checking user existence");
@@ -20,6 +21,38 @@ const checkIfUserExists = async (userName) => {
 router.get("/", (req, res) => {
   res.send("Hello from user home page");
 });
+
+//find user
+router.get("/find", async (req, res) => {
+  const filter = req.query.filter || "";
+
+  const users = await User.find({
+      $or: [
+          {
+              firstname: {
+                  $regex: filter,
+                  $options: "i",
+              },
+          },
+          {
+              lastname: {
+                  $regex: filter,
+                  $options: "i",
+              },
+          },
+      ],
+  });
+
+  res.json({
+      user: users.map((user) => ({
+          username: user.username,
+          firstname: user.firstname,
+          lastname: user.lastname,
+          _id: user._id,
+      })),
+  });
+});
+
 
 // Signup page
 router.get("/signup", (req, res) => {
@@ -41,10 +74,10 @@ router.post("/signup", async (req, res) => {
 
   try {
     // Check if user exists
-    const existingUser = await checkIfUserExists(result.data.userName);
+    const existingUser = await checkIfUserExists(result.data.username);
     if (existingUser) {
       return res.status(409).json({
-        message: "Username already exists",
+        message: "username already exists",
       });
     }
 
@@ -56,7 +89,7 @@ router.post("/signup", async (req, res) => {
 
     // Generate JWT token for the new user
     const token = jwt.sign(
-      { userName: newUser.userName },
+      { username: newUser.username },
       process.env.JWT_SECRET,
       { expiresIn: "1h" } // Token expires in 1 hour
     );
@@ -95,7 +128,7 @@ router.post("/login", async (req, res) => {
 
   try {
     // Check if the user exists
-    const user = await checkIfUserExists(result.data.userName);
+    const user = await checkIfUserExists(result.data.username);
     if (!user || user.password !== result.data.password) {
       return res.status(401).json({
         message: "Invalid username or password",
@@ -104,7 +137,7 @@ router.post("/login", async (req, res) => {
 
     // Generate JWT token for the user
     const token = jwt.sign(
-      { userName: user.userName },
+      { username: user.username },
       process.env.JWT_SECRET,
       { expiresIn: "1h" } // Token expires in 1 hour
     );
@@ -122,5 +155,8 @@ router.post("/login", async (req, res) => {
     });
   }
 });
+
+
+
 
 module.exports = router;

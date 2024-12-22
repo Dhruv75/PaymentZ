@@ -4,6 +4,8 @@ const cors = require("cors");
 require("dotenv").config();
 const jwt = require("jsonwebtoken");
 const userRouter = require("./routes/user");
+const protectedRoute = require("./routes/protectedRoute");
+
 
 //configuration
 const app = express();
@@ -12,6 +14,7 @@ app.use(express.json());
 
 //user route
 app.use("/user", userRouter);
+app.use("/protected", protectedRoute);
 
 app.get("/", function (req, res) {
   res.send("hello form home page");

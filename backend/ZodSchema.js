@@ -1,7 +1,7 @@
 const { z } = require("zod");
 
 const zodSchemaSignUp = z.object({
-  userName: z
+  username: z
     .string({ required_error: "Name is required" })
     .trim()
     .min(5, { message: "Must be 5 or more characters long" })
@@ -13,11 +13,11 @@ const zodSchemaSignUp = z.object({
       /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
       "Password must contain at least one digit, one lowercase letter, one uppercase letter, and one special character"
     ),
-  firstName: z
+  firstname: z
     .string()
     .trim()
     .max(100, { message: "Name cannot be longer than 100 words" }),
-  lastName: z
+  lastname: z
     .string()
     .trim()
     .max(100, { message: "Name cannot be longer than 100 words" }),
@@ -25,7 +25,7 @@ const zodSchemaSignUp = z.object({
 
 
 const zodSchemaForLogin = z.object({
-    userName: z
+    username: z
       .string({ required_error: "Name is requires" })
       .trim()
       .min(5, { message: "Must be 5 or more characters long" })

@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema({
-  userName: {
+  username: {
     type: String,
     required: true,
     unique: true,
@@ -15,13 +15,13 @@ const userSchema = new mongoose.Schema({
     required: true,
     minLength: 6,
   },
-  firstName: {
+  firstname: {
     type: String,
     required: true,
     trim: true,
     maxLength: 50,
   },
-  lastName: {
+  lastname: {
     type: String,
     required: true,
     trim: true,
@@ -29,8 +29,24 @@ const userSchema = new mongoose.Schema({
   },
 });
 
+const accountSchema = new mongoose.Schema({
+  userId: {
+    type: mongoose.Schema.Types.ObjectId, // Reference to the User model
+    ref: "User", // This refers to the 'User' collection
+    required: true,
+  },
+  balance: {
+    type: Number, // Balance is stored as a number
+    required: true,
+  },
+});
+
+// Create a model from the schema
+const Account = mongoose.model("Account", accountSchema);
+
 const User = mongoose.model("User", userSchema);
 
 module.exports = {
   User,
+  Account,
 };
